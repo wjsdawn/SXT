@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>520 · 致我最爱的你</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 通用页面容器 */
+        .page {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* 封面 */
+        .cover h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        .cover p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        /* 暗号页面 */
+        .code-page {
+            display: none;
+        }
+        .code-page h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .code-input {
+            padding: 12px 20px;
+            width: 260px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .tip {
+            font-size: 15px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        /* 按钮通用 */
+        .btn {
+            padding: 12px 30px;
+            background: #ff5e8f;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 94, 143, 0.4);
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            background: #ff3a7a;
+        }
+
+        /* 游戏区域 */
+        .game {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            padding: 20px;
+        }
+        .game-info {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 20px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        /* 爱心动画 */
+        .heart {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #ff5e8f;
+            transform: rotate(45deg);
+            cursor: pointer;
+            animation: float 3s infinite ease-in-out;
+        }
+        .heart:before, .heart:after {
+            content: '';
+            width: 30px;
+            height: 30px;
+            background: #ff5e8f;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .heart:before { top: -15px; left: 0; }
+        .heart:after { top: 0; left: -15px; }
+        @keyframes float {
+            0%,100% { transform: rotate(45deg) translateY(0); }
+            50% { transform: rotate(45deg) translateY(-15px); }
+        }
+
+        /* 情书样式 */
+        .letter {
+            display: none;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            line-height: 2;
+            font-size: 17px;
+            color: #333;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 1.5s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .letter h2 {
+            text-align: center;
+            color: #ff5e8f;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .letter p {
+            margin-bottom: 20px;
+            text-indent: 2em;
+        }
+        .letter .end {
+            text-align: right;
+            margin-top: 30px;
+            color: #ff5e8f;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 1. 封面 -->
+    <div class="page cover" id="cover">
+        <h1>💌 520 · 致我最爱的你</h1>
+        <p>完成专属解锁，查看我想对你说的所有心里话</p>
+        <button class="btn" id="toCodeBtn">进入解锁</button>
+    </div>
+
+    <!-- 2. 暗号页面 -->
+    <div class="page code-page" id="codePage">
+        <h2>请输入专属暗号</h2>
+        <p class="tip">只有你能打开这封信哦 ✨</p>
+        <input type="text" class="code-input" id="codeInput" placeholder="请输入暗号">
+        <button class="btn" id="checkCodeBtn">确认解锁</button>
+    </div>
+
+    <!-- 3. 爱心小游戏 -->
+    <div class="game" id="game">
+        <div class="game-info">已收集：<span id="count">0</span>/10 颗爱心</div>
+    </div>
+
+    <!-- 4. 情书 -->
+    <div class="letter" id="letter">
+        <h2>致我最爱的你</h2>
+        <p>提笔写这封信的时候，没有华丽的辞藻，也没有刻意铺垫的浪漫，只是突然很想认认真真告诉你，遇见你之后，我所有的温柔和心安，都有了归宿。</p>
+        <p>以前我总觉得，生活不过是日复一日的平淡，日子匆匆而过，没什么值得期待，也没什么值得惦念。我习惯了独来独往，习惯了一个人应对所有琐碎和疲惫，以为人生大抵就是这样，平淡无味，波澜不惊。直到你的出现，像一束温柔的光，轻轻穿透了我单调的生活，把所有的平庸和枯燥，都酿成了温柔的欢喜。</p>
+        <p>我喜欢你，不是一时兴起的心动，而是日积月累的笃定。是和你聊天时，字字句句都觉得舒心惬意；是和你相处时，哪怕安安静静不说话，也不会觉得尴尬局促；是看到好看的风景、吃到好吃的东西，第一时间就想分享给你；是无论忙碌还是闲暇，心里最惦记、最牵挂的人，永远是你。</p>
+        <p>上次你问过，我能给你提供什么，我不是擅长夸耀自己的人，一时之间我哑口无言；后来你又问我，你能给我提供什么，这次作为回答的人我想到了很多。现在我想到了这个问题的答案，能为你提供什么在你的心中，或许现在还没有意识到，以后也一定会意识到，这是我们走到一起的原因。</p>
+        <p>和你在一起的每一天，都很值得。那些细碎的日常，晨起的问候、睡前的晚安，并肩散步的晚风，相互陪伴的时光，偶尔的小拌嘴、过后的温柔包容，这些看似普通的瞬间，拼凑成了我最珍贵的幸福。我慢慢明白，最好爱情从不是轰轰烈烈，而是细水长流的陪伴，是有人懂你的冷暖，知你的悲欢，愿意陪你岁岁年年，烟火人间。</p>
+        <p>我不敢说自己是最完美的恋人，但我可以保证，我对你的真心，永远纯粹且热烈。我会耐心包容你的小情绪，会珍惜你所有的付出与温柔，会在你开心时陪你欢喜，在你难过时护你周全。我不想给你空洞的承诺，只想用日复一日的行动告诉你，选择你，是我这辈子最正确、最幸运的决定。</p>
+	<p>没有永远正确的选择，只有永远坚定的选择，我在笨拙的表达我的爱意，而你也在改变自己，尝试着怎么喜欢一个人，怎么表达自己的情感，双向奔赴的情感总是最好的！</p>
+        <p>往后的日子，春去秋来，寒来暑往，我想一直陪着你。陪你看遍四季风光，陪你经历人间烟火，陪你度过平凡朝夕，也陪你奔赴所有美好未来。无论前路风雨或是晴朗，我都会站在你身边，偏爱你、守护你、陪伴你，岁岁年年，不离不弃。</p>
+        <p>何其有幸，此生遇见你。</p>
+        <p>往后余生，满心是你，满眼是你，万般可期，皆予你。</p>
+        <div class="end">永远爱你的我<br>于平凡朝夕中落笔</div>
+    </div>
+
+    <script>
+        const cover = document.getElementById('cover');
+        const codePage = document.getElementById('codePage');
+        const game = document.getElementById('game');
+        const letter = document.getElementById('letter');
+        const toCodeBtn = document.getElementById('toCodeBtn');
+        const checkCodeBtn = document.getElementById('checkCodeBtn');
+        const codeInput = document.getElementById('codeInput');
+        const countText = document.getElementById('count');
+
+        let count = 0;
+        const target = 10;
+
+        const RIGHT_CODE = "3月1日";
+
+        // 1. 封面 → 暗号页
+        toCodeBtn.addEventListener('click', () => {
+            cover.style.display = 'none';
+            codePage.style.display = 'flex';
+        });
+
+        // 2. 验证暗号
+        checkCodeBtn.addEventListener('click', () => {
+            if(codeInput.value.trim() === RIGHT_CODE){
+                codePage.style.display = 'none';
+                game.style.display = 'block';
+                createHeart();
+            }else{
+                alert('暗号不对哦，再想想～');
+                codeInput.value = '';
+            }
+        });
+
+        // 3. 生成爱心游戏
+        function createHeart() {
+            if(count >= target) {
+                game.style.display = 'none';
+                letter.style.display = 'block';
+                return;
+            }
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            const x = Math.random() * (window.innerWidth - 40);
+            const y = Math.random() * (window.innerHeight - 40);
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+
+            heart.addEventListener('click', () => {
+                heart.remove();
+                count++;
+                countText.innerText = count;
+                createHeart();
+            });
+            game.appendChild(heart);
+        }
+    </script>
+</body>
+</html>
